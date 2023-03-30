@@ -8,6 +8,7 @@ Pepper-ros-navigation[ros package].
 HCR-NLP
 
 ## Display
-display
+display (JavaScript)
 
 ## CV
+cv
