@@ -1,0 +1,11 @@
+<launch>
+    <!-- For Simulation -->
+    <arg name="sim_mode" default="false" />
+    <param name="/use_sim_time" value="$(arg sim_mode)"/>
+    <arg name="loopTimes"       default="0" />
+    <!-- move bas -->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+	<!-- params for move_base -->
+	
+    </node>
+</launch>
