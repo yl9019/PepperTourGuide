@@ -1,0 +1,146 @@
+import org.scalajs.dom.{document, html, window}
+import org.scalajs.dom.CanvasRenderingContext2D
+import scalajs.js.timers.setInterval
+import org.scalajs.dom.XMLHttpRequest
+import scalajs.js
+import org.scalajs.dom.UIEvent
+
+@js.native
+trait MapResp extends js.Object:
+  val width: Int
+  val height: Int
+  val ox: Int
+  val oy: Int
+
+object FloorState:
+  val leftPane = document.getElementById("left-pane").asInstanceOf[html.Div]
+  val canvas = document.getElementById("right-canvas").asInstanceOf[html.Canvas]
+  val mapImg: html.Image = document.createElement("img").asInstanceOf[html.Image]
+  var mapReady = false
+  def redrawCnv(): Unit =
+    c2d.clearRect(0, 0, canvas.width, canvas.height)
+    println(s"Drawing Image! ${mdX}, ${mdY}, $mapDim, $mapDim")
+    c2d.drawImage(mapImg, canvas.width - mdX, canvas.height - mdY, mdX, mdY)
+    val px1 = mdX / (data.width.toDouble max 1)
+    val px2 = mdY / (data.height.toDouble max 1)
+    println(s"Per x: $px1, per y: $px2")
+    var max = -1
+    var mx = 0
+    var my = 0
+    for (i <- mapData.indices; j <- mapData(i).indices if mapData(i)(j) >= 0)
+      if max < mapData(i)(j) then
+        println(s"Max: ($mx, $my) => ($i, $j) || ($max) => (${mapData(i)(j)})")
+        max = mapData(i)(j)
+        mx = i
+        my = j
+      val r = if mapData(i)(j) < 0 then 0 else (255 * mapData(i)(j)) / 100
+      val g = if mapData(i)(j) < 0 then 0 else 255 - (255 * mapData(i)(j)) / 100
+      c2d.fillStyle = s"rgba($r, $g, 0, 0.2)"
+      c2d.fillRect(i * px1, jif (floor.mapReady)  * px2, px1, px2)
+    c2d.fillStyle = "#ff0000"
+    c2d.beginPath()
+    c2d.moveTo(mx * px1, my * px2)
+    c2d.arc(mx*px1, my*px2, 5, 0, 360)
+    c2d.fill()
+    c2d.closePath()
+    c2d.fill()
+  def updateCnv(): Unit =
+    canvas.width = canvas.clientWidth
+    canvas.height = canvas.clientHeight
+    if (mapReady) redrawCnv()
+  window.onresize = {_ => updateCnv()}
+  updateCnv()
+  mapImg.onload = {e => mapReady = true; redrawCnv()}
+  def mapDim = (canvas.width / data.width.toDouble) min (canvas.height / data.height.toDouble)
+  def mdX = (mapDim * data.width).toInt
+  def mdY = (mapDim * data.height).toInt
+  val c2d = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
+  var data: MapResp = js.Dynamic.literal(width = 0, height = 0, ox = 0, oy = 0).asInstanceOf[MapResp]
+  private var _lvl: Option[Int] = None
+  def lvl: Option[Int] = _lvl
+  def lvl_=(x: Option[Int]) =
+    _lvl = x
+    mapReady = false
+    mapImg.src = s"maps/map${_lvl.get}.png"
+    val xhr = new XMLHttpRequest()
+    xhr.open("GET", "data/map_data.json")
+    xhr.onload = {e =>
+      if xhr.status == 200 then
+        data = js.JSON.parse(xhr.responseText).asInstanceOf[MapResp]
+        println(js.JSON.stringify(data))
+        mapData = Array.fill(data.width, data.height)(-1)
+    }
+    xhr.send()
+
+  var mapData = Array[Array[Int]]()
+
+  def startFloorUpdate() =
+    setInterval(2500) {
+      val xhr = new XMLHttpRequest()
+      xhr.open("GET", "data/floor")
+      xhr.onload = {e =>
+        if xhr.status == 200 then
+          val resp = xhr.responseText.toIntOption
+          if resp.isDefined && resp != FloorState.lvl then
+            println(s"Floor: ${FloorState.lvl} => $resp")
+            FloorState.lvl = resp
+        else println("Failed")
+      }
+      xhr.send()
+    }
+
+  def startPositionUpdate() =
+    setInterval(5000) {
+      val xhr = new XMLHttpRequest()
+      xhr.open("GET", "data/map_probs")
+      xhr.onload = {e =>
+        if xhr.status == 200 then
+          val it = xhr.responseText.iterator
+          println(s"Setting map probs: ${data.width}, ${data.height}")
+          for (i <- 0 until data.width; j <- 0 until data.height)
+            if it.hasNext then
+              val nxt = it.next()
+              if (nxt > 100 || nxt < 0) mapData(i)(j) = -1
+              else mapData(i)(j) = nxt
+            else println("Some error with it...")
+          redrawCnv()
+      }
+      xhr.send()
+    }
+
+  @main def main =
+    println("STARTING!!")
+    startFloorUpdate()
+    startPositionUpdate()
+    /*
+    qiSession((session) => {
+      session.service("ALTextToSpeech").`then`((tts: ALTextToSpeech) => {
+        tts.say("I'm speaking from a web request")
+        println(scalajs.js.JSON.stringify(tts.getLanguage()))
+      })
+    })
+    */
+
+/*
+final val web_dir = "/home/nao/.local/share/PackageManager/apps/webserver/html"
+
+def pyStr(name: String, dataB64: String): String =
+  s"""exec('''
+import base64
+file = open("$web_dir/data/$name", "wb")
+file.write(base64.b64decode(b'$dataB64'))
+file.close()
+  ''')"""
+
+@main def main =
+  val sects = document.URL.split("#")
+  val file = sects(1)
+  val rest = sects.drop(2).mkString("#")
+  qiSession({session =>
+    session.service("ALPythonBridge").`then` {pyMod =>
+      val frest = pyStr(file, rest)
+      println(frest)
+      pyMod.eval(frest)
+    }
+  })
+*/
