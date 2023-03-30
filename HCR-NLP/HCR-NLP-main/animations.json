@@ -1,0 +1,55 @@
+{
+    "greeting": [
+        "animations/Stand/Gestures/Hey_1",
+        "animations/Stand/Gestures/Hey_3",
+        "animations/Stand/Gestures/Hey_4",
+        "animations/Stand/Gestures/Hey_6"
+    ],
+
+    "idk": [
+        "animations/Stand/Gestures/IDontKnow_1",
+        "animations/Stand/Gestures/IDontKnow_2",
+        "animations/Stand/Gestures/IDontKnow_3"
+    ],
+
+    "explain": [
+        "animations/Stand/BodyTalk/Speaking/BodyTalk_11",
+        "animations/Stand/BodyTalk/Speaking/BodyTalk_12",
+        "animations/Stand/BodyTalk/Speaking/BodyTalk_14",
+        "animations/Stand/BodyTalk/Speaking/BodyTalk_15",
+        "animations/Stand/BodyTalk/Speaking/BodyTalk_1",
+        "animations/Stand/BodyTalk/Speaking/BodyTalk_2",
+        "animations/Stand/BodyTalk/Speaking/BodyTalk_3",
+        "animations/Stand/BodyTalk/Speaking/BodyTalk_4"
+    ],
+
+    "think": [
+        "animations/Stand/Gestures/Thinking_1",
+        "custom_animations/head_scratch",
+        "custom_animations/think_1",
+        "custom_animations/think_2"
+    ],
+
+    "yes": [
+        "animations/Stand/Gestures/Yes_1",
+        "animations/Stand/Gestures/Yes_2"
+    ],
+
+    "no": [
+        "animations/Stand/Gestures/No_1",
+        "animations/Stand/Gestures/No_2"
+    ],
+
+    "welcome": [
+        "custom_animations/welcome"
+    ],
+    "point_left": [
+        "custom_animations/point_left"
+    ],
+    "point_right": [
+        "custom_animations/point_right"
+    ],
+    "follow_back": [
+        "custom_animations/follow_me_back"
+    ]
+}

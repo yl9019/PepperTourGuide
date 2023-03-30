@@ -1,0 +1,1 @@
+Which of the following topics suits me best? {Computer Vision, Machine Learning, AI, Communications,Computer Architecture, Analog Electronics, Signal Processing,Control Systems, Wearable Devices,Semiconductors,Circuits,Embedded Systems,Robotics,Networks,None of the above}. Say only one most suitable topic, nothing else.
