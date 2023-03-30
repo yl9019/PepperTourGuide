@@ -21,7 +21,7 @@ def callback_say(data):
   bd = bytes(str(data.data), 'utf8')
   write_file("saying", bd)
 
-def callback_say(data):
+def callback_pos(data):
   x = data.pose.pose.position.x
   y = data.pose.pose.position.y
   print("position " + str(x) + ";" + str(y))
@@ -32,7 +32,7 @@ def callback_say(data):
 rospy.init_node('webserver', anonymous=True)
 rospy.Subscriber("current_floor", Int32, callback_floor)
 rospy.Subscriber("speak", String, callback_say)
-rospy.Subscriber("amcl_pose", PoseWithCovarianceStamped, callback_say)
+rospy.Subscriber("amcl_pose", PoseWithCovarianceStamped, callback_pos)
 print("Ros Started")
 rospy.spin()
 
